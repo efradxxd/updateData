@@ -2,8 +2,11 @@ import csv
 import json
 import requests
 import datetime
+import os
 
-url = 'http://localhost:3000/provedores'
+# os.remove("data.json")
+
+url = 'http://localhost:3000/actualizarProvedores'
 datos = {}
 datos['provedores'] = []
 
@@ -20,7 +23,7 @@ def validarCampo (campo):
             campo = datetime.datetime.strptime(campo, '%d/%m/%Y')
             campo = campo.date()
         elif len(campo) > 10:
-            print (campo)
+            # print (campo)
             campo = campo.split()
             campo = campo[0]
             if len(campo) <= 9:
@@ -34,6 +37,7 @@ def validarCampo (campo):
 
 with open('libro.csv', encoding="utf-8") as csvfile:
     reader = csv.DictReader(csvfile)
+    rfcAnterior = '';
     for row in reader:
         # row = [entry.decode("utf8") for entry in row]
         nombreContribuyente = row['nombreContribuyente']
@@ -54,35 +58,38 @@ with open('libro.csv', encoding="utf-8") as csvfile:
         # pSatFavorable = datetime.datetime.strptime(pSatFavorable, '%d/%m/%Y')
         pDofFavorable = validarCampo(row['pDofFavorable'])
         # pDofFavorable = datetime.datetime.strptime(pDofDefinitivo, '%d/%m/%Y')
-        situacionActual = 0;
+        situacion = 0;
         if row['situacionActual']=='Sentencia favorable':
-            situacionActual = 4
+            situacion = 4
         elif (row['situacionActual']=='Definitivo'):
-            situacionActual = 3
+            situacion = 3
         elif (row['situacionActual']=='Desvirtuado'):
-            situacionActual = 2
+            situacion = 2
         elif (row['situacionActual']=='Presunto'):
-            situacionActual = 1
+            situacion = 1
         if nombreContribuyente.find("'") != -1:
             nombreContribuyente = nombreContribuyente.replace("'","''")
         if nombreContribuyente.find("//") == -1:
             if rfc != 'XXXXXXXXXXXX':
-                datos['provedores'].append({
-                    'rfc': rfc,
-                    'nombreContribuyente': nombreContribuyente,
-                    'situacionActual': situacionActual,
-                    'pSatPresunto': pSatPresunto,
-                    'pDofPresunto': pDofPresunto,
-                    'pSatDesvirtuado': pSatDesvirtuado,
-                    'pDofDesvirtuado': pDofDesvirtuado,
-                    'pSatDefinitivo': pSatDefinitivo,
-                    'pDofDefinitivo': pDofDefinitivo,
-                    'pSatFavorable': pSatFavorable,
-                    'pDofFavorable': pDofFavorable
-                    })
-    # print (data)
-    with open('data.json', 'w', encoding="utf-8" ) as file:
-        json.dump(datos, file, indent=4, ensure_ascii=False)
-    x = requests.post(url, json=datos)
-    print(x.text)
-    # print(datos)
+                if rfc != rfcAnterior:
+                    # datos['provedores'].pop()
+                    datos['provedores'].append({
+                        'rfc': rfc,
+                        'nombreContribuyente': nombreContribuyente,
+                        'situacion': situacion,
+                        'pSatPresunto': pSatPresunto,
+                        'pDofPresunto': pDofPresunto,
+                        'pSatDesvirtuado': pSatDesvirtuado,
+                        'pDofDesvirtuado': pDofDesvirtuado,
+                        'pSatDefinitivo': pSatDefinitivo,
+                        'pDofDefinitivo': pDofDefinitivo,
+                        'pSatFavorable': pSatFavorable,
+                        'pDofFavorable': pDofFavorable
+                        })
+                    rfcAnterior = rfc;                   
+# print (data)
+with open('data.json', 'w', encoding="utf-8" ) as file:
+    json.dump(datos, file, indent=4, ensure_ascii=False)
+x = requests.post(url, json=datos)
+print(x.text)
+# print(datos)
