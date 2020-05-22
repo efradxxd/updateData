@@ -8,5 +8,6 @@ testfunction(){
     sed "1d" lista1.csv > lista2.csv
     rm -r lista1.csv
     mv lista2.csv  ./lista.csv
+    python3 index.py 
 }
 testfunction
