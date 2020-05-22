@@ -6,7 +6,7 @@ import os
 
 # os.remove("data.json")
 
-url = 'http://localhost:3000/actualizarProvedores'
+url = 'http://ec2-52-53-179-97.us-west-1.compute.amazonaws.com:3000/actualizarProvedores'
 datos = {}
 datos['provedores'] = []
 
@@ -17,8 +17,11 @@ def validarCampo (campo):
         campo = '0000-00-00'
     else:
         if len(campo) <= 9:
-            campo = datetime.datetime.strptime(campo, '%d/%m/%y')
-            campo = campo.date()
+            try:
+                campo = datetime.datetime.strptime(campo, '%d/%m/%y')
+                campo = campo.date()
+            except:
+                campo = '0000-00-00'
         elif len(campo) == 10:
             campo = datetime.datetime.strptime(campo, '%d/%m/%Y')
             campo = campo.date()
@@ -35,37 +38,37 @@ def validarCampo (campo):
         # print(campo.date())
     return str(campo)
 
-with open('libro.csv', encoding="utf-8") as csvfile:
+with open('lista.csv', encoding='ISO-8859-1') as csvfile:
     reader = csv.DictReader(csvfile)
     rfcAnterior = '';
     for row in reader:
         # row = [entry.decode("utf8") for entry in row]
-        nombreContribuyente = row['nombreContribuyente']
-        rfc = row['\ufeffrfc']
-        pSatPresunto = validarCampo(row['pSatPresunto'])
+        nombreContribuyente = row['Nombre del Contribuyente']
+        rfc = row['RFC']
+        pSatPresunto = validarCampo(row['Publicación página SAT presuntos'])
         # pSatPresunto = datetime.datetime.strptime(pSatPresunto, '%d/%m/%Y')
-        pDofPresunto = validarCampo(row['pDofPresunto'])
+        pDofPresunto = validarCampo(row['Publicación DOF presuntos'])
         # pDofPresunto = datetime.datetime.strptime(pDofPresunto, '%d/%m/%Y')
-        pSatDesvirtuado = validarCampo(row['pSatDesvirtuado'])
+        pSatDesvirtuado = validarCampo(row['Publicación página SAT desvirtuados'])
         # pSatDesvirtuado = datetime.datetime.strptime(pSatDesvirtuado, '%d/%m/%Y')
-        pDofDesvirtuado = validarCampo(row['pDofDesvirtuado'])
+        pDofDesvirtuado = validarCampo(row['Publicación DOF desvirtuados'])
         # pDofDesvirtuado = datetime.datetime.strptime(pDofDesvirtuado, '%d/%m/%Y')
-        pSatDefinitivo = validarCampo(row['pSatDefinitivo'])
+        pSatDefinitivo = validarCampo(row['Publicación página SAT definitivos'])
         # pSatDefinitivo = datetime.datetime.strptime(pSatDefinitivo, '%d/%m/%Y')
-        pDofDefinitivo = validarCampo(row['pDofDefinitivo'])
+        pDofDefinitivo = validarCampo(row['Publicación DOF definitivos'])
         # pDofDefinitivo = datetime.datetime.strptime(pDofDefinitivo, '%d/%m/%Y')
-        pSatFavorable = validarCampo(row['pSatFavorable'])
+        pSatFavorable = validarCampo(row['Publicación página SAT sentencia favorable'])
         # pSatFavorable = datetime.datetime.strptime(pSatFavorable, '%d/%m/%Y')
-        pDofFavorable = validarCampo(row['pDofFavorable'])
+        pDofFavorable = validarCampo(row['Publicación DOF sentencia favorable'])
         # pDofFavorable = datetime.datetime.strptime(pDofDefinitivo, '%d/%m/%Y')
         situacion = 0;
-        if row['situacionActual']=='Sentencia favorable':
+        if row['Situación del contribuyente']=='Sentencia Favorable':
             situacion = 4
-        elif (row['situacionActual']=='Definitivo'):
+        elif (row['Situación del contribuyente']=='Definitivo'):
             situacion = 3
-        elif (row['situacionActual']=='Desvirtuado'):
+        elif (row['Situación del contribuyente']=='Desvirtuado'):
             situacion = 2
-        elif (row['situacionActual']=='Presunto'):
+        elif (row['Situación del contribuyente']=='Presunto'):
             situacion = 1
         if nombreContribuyente.find("'") != -1:
             nombreContribuyente = nombreContribuyente.replace("'","''")
@@ -73,6 +76,7 @@ with open('libro.csv', encoding="utf-8") as csvfile:
             if rfc != 'XXXXXXXXXXXX':
                 if rfc != rfcAnterior:
                     # datos['provedores'].pop()
+                    # print(rfc)
                     datos['provedores'].append({
                         'rfc': rfc,
                         'nombreContribuyente': nombreContribuyente,
