@@ -42,7 +42,7 @@ with open('lista.csv', encoding='ISO-8859-1') as csvfile:
     reader = csv.DictReader(csvfile)
     rfcAnterior = '';
     for row in reader:
-        # row = [entry.decode("utf8") for entry in row]
+        # row = [entry.decode("utf8") for entry in row]v
         nombreContribuyente = row['Nombre del Contribuyente']
         rfc = row['RFC']
         pSatPresunto = validarCampo(row['Publicación página SAT presuntos'])
