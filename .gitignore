@@ -1,7 +1,6 @@
-libro.xlsx/
-libro.csv/
-jsonTest.py/
-lectura.py/
-test.py/
-lista.csv/
-data.json/
+libro.xlsx
+jsonTest.py
+lectura.py
+test.py
+lista.csv
+data.json
