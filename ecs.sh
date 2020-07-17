@@ -10,4 +10,4 @@ testfunction(){
     mv lista2.csv  ./lista.csv
     python3 index.py 
 }
-testfunction
+testfunction 
