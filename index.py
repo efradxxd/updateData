@@ -8,7 +8,7 @@ import os
 
 # url = 'http://ec2-52-53-179-97.us-west-1.compute.amazonaws.com:3000/actualizarProvedores'
 # 
-url = 'http://54.241.57.24:3000/actualizarProvedores'
+url = 'https://api.fakturor.com.mx/actualizarProvedores'
 datos = {}
 datos['provedores'] = []
 
