@@ -8,7 +8,7 @@ import os
 #Edit your /etc/nginx/nginx.conf
 #On http section add line:   client_max_body_size 8M;
 #service ngnix reload or nginx -s reload
-url = 'https://api.fakturor.com.mx/actualizarProvedores'
+url = 'https://back.fakturor.com.mx/actualizarProvedores'
 datos = {}
 datos['provedores'] = []
 
